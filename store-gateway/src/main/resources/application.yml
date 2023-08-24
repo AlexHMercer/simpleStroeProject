@@ -1,0 +1,45 @@
+# 配置网关
+spring:
+  cloud:
+    gateway:
+      routes: # 路由规则
+        - id: user-service  #路由规则的名称 不可重复 这里和服务名相同
+          uri: lb://user-service # lb代表负载均衡，://后为前端访问predicates：path时应该请求的的服务
+          predicates:
+            - Path=/user/**  # 访问user是转发到用户服务
+        - id: product-service # 商品服务
+          uri: lb://product-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/product/** # 商品服务路径
+        - id: static-service # 静态资源服务
+          uri: lb://static-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/public/** # 访问静态资源服务,转发
+        - id: carousel-service # 轮播图服务
+          uri: lb://carousel-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/carousel/** # 访问轮播图,转发到carousel
+        - id: category-service # 类别服务
+          uri: lb://category-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/category/** # 访问类别服务,转发到category服务
+        - id: search-service # 搜索服务的转发规则
+          uri: lb://search-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/search/** # 访问搜索服务,转发到search服务
+        - id: collect-service # 收藏服务的转发规则
+          uri: lb://collect-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/collect/** # 访问collect相关,转发到collect服务
+        - id: cart-service
+          uri: lb://cart-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/cart/** # 访问购物车相关,转发到cart-service服务
+        - id: order-service # 访问order-service相关,转发到order-service服务
+          uri: lb://order-service #使用负载均衡,调用服务名
+          predicates:
+            - Path=/order/** # 访问order-service相关,转发到order-service服务
+        - id: admin-service  # 后台管理
+          uri: lb://admin-service
+          predicates:
+            - Path=/admin/**
