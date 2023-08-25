@@ -67,9 +67,13 @@ public class CacheConfiguration {
 
         //常见jackson的对象映射器,并设置一些基本属性
         ObjectMapper objectMapper = new ObjectMapper();
+        // 禁用以时间戳写入日期
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // 在json中注册处理时间的模块
         objectMapper.registerModule(new JavaTimeModule());
+        // 忽略在实体类中标记的jackson注解
         objectMapper.configure(MapperFeature.USE_ANNOTATIONS,false);
+        // JsonInclude.Include.NON_NULL    属性为NULL 不序列化
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance,
                 ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
