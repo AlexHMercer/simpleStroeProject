@@ -8,3 +8,10 @@ spring:
     listener:
       simple:
         prefetch: 1   # 预先分配1个 能者多劳
+    # 开启生产者的发布确认机制，该消息返回是否投递的消息到达MQ服务器
+    publisher-confirm-type: CORRELATED
+    # 消息在未被队列接收时返回
+    publisher-returns: true
+    # 消息未投递到队列中时，将消息返回生产者，为false直接丢弃
+    template:
+      mandatory: true

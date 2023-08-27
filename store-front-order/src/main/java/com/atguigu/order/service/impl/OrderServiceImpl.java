@@ -16,6 +16,7 @@ import com.atguigu.vo.OrderVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -86,10 +88,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //订单数据批量保存
         saveBatch(orderList);
 
-        //发送购物车消息
-        rabbitTemplate.convertAndSend("topic.ex","clear.cart",cartIds);
+        //发送购物车消息，CorrelationData为该消息设置一个唯一的特征值
+        rabbitTemplate.convertAndSend("topic.ex","clear.cart"
+                ,cartIds,new CorrelationData(UUID.randomUUID().toString()));
         //发送商品服务消息
-        rabbitTemplate.convertAndSend("topic.ex","sub.number",orderToProducts);
+        rabbitTemplate.convertAndSend("topic.ex","sub.number"
+                ,orderToProducts,new CorrelationData(UUID.randomUUID().toString()));
         return R.ok("订单保存成功!");
     }
 
